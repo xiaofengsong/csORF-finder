@@ -44,21 +44,19 @@ Keras is backened on tensorflow.
 	Command:
 		python csORF_finder.py -d input_path/ -i input_file.fa -o output_dir/ -s species -t region_type
 	Options:
-	-d,	--dir
-		  input file path
-	-i,	--input
-		  input file name (FASTA format)  
-	-o,	--output
-		  output file path
-	-s,	--species
-		  species name, three options: H.sapiens, M.musculus, and D.melanogaster
-	-t,	--type
-		  region type, two options: CDS and non-CDS
-	-h,	--help
-          	  show the help information
-```
-python csORF_finder.py -d input_dir/ -o output_dir/ -f inputfile.txt -s H.sapiens -t CDS
-```
+		-d,	--dir
+			  input file path
+		-i,	--input
+			  input file name (FASTA format)  
+		-o,	--output
+			  output file path
+		-s,	--species
+			  species name, three options: H.sapiens, M.musculus, and D.melanogaster
+		-t,	--type
+			  region type, two options: CDS and non-CDS
+		-h,	--help
+          	  	  show the help information
+
 More details can be found from [1]
 
 ## REFERANCE
