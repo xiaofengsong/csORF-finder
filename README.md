@@ -1,5 +1,5 @@
-# csORF-finder is an effective ensemble learning approach for accurate identification of multi-species coding short open reading frames
-csORF-finder is a series of species-specific ensemble models, integrating Efficient-CapsNet and LightGBM for identifying csORFs in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
+# A tool for identifying coding short open reading frames (csORF)
+csORF-finder is an ensemble learning approach developed for identifying csORFs in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
 
 ## EXPLANATION
 This repository contains four folders, code, raw_data, input_files and output_files.
@@ -51,9 +51,9 @@ The predicted results is located in output_files.
 More details can be found from [1]
 
 ## REFERANCE
-[1] Zhang M, Zhao J, Li C, Song J, Song X. csORF-finder is an effective ensemble learning approach for accurate identification of multi-species coding short open reading frames.
+[1] Zhang M, Zhao J, Li C, Jiang B, Song JN, Song XF. csORF-finder: an effective ensemble learning approach for accurate identification of multi-species coding short open reading frames. (Unpublished)
 
 ## CONTACT
-If you have any inqueries, please contact xfsong@nuaa.edu.cn；Jiangning.Song@monash.edu；mengzhang@nuaa.edu.cn.
+If you have any inqueries, please contact mengzhang@nuaa.edu.cn.
 
 
