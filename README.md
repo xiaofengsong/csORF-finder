@@ -40,8 +40,7 @@ math
 will be used. keras is backened on tensorflow.  
 Download all the files firstly, open test_csORF-finder.py, change code:  
 ```
-test_model('.../input_files/species/type/','.../output_files/',
-           'H.sapiens_sORF.txt',species,type)
+python csORF_finder.py -d input_dir/ -o output_dir/ -f inputfile.txt -s H.sapiens -t CDS
 ```
 'H.sapiens_sORF.txt' is the input file name, the sequences in this file must be Fasta format.\
 species: three options are avalibale: 'H.sapiens','M.musculus' and 'D.melanogaster'.\
