@@ -1,5 +1,5 @@
-# A tool for identifying coding short open reading frames (csORF)
-csORF-finder is an ensemble learning approach developed for identifying csORFs in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
+# A tool for identifying coding short ORF (csORF)
+csORF-finder is an ensemble learning approach developed for identifying coding short open reading frames (csORFs) in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
 
 ## EXPLANATION
 This repository contains four folders, code, raw_data, input_files and output_files.
