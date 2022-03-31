@@ -12,7 +12,6 @@ feature_encoding.py
 layers.py
 Efficient_CapsNet_sORF150.py
 Efficient_CapsNet_sORF250.py
-test_csORF-finder.py
 ```
 ### raw_data folder:
 This folder contains all the training and testing datasets in [1].
