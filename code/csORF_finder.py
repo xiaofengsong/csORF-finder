@@ -14,7 +14,7 @@ from sklearn.metrics import roc_auc_score
 import sys
 from optparse import OptionParser
 
-##读取Fasta序列
+##read Fasta sequence
 def readFasta(file):
     if os.path.exists(file) == False:
         print('Error: "' + file + '" does not exist.')
@@ -35,7 +35,7 @@ def readFasta(file):
         myFasta.append([name, sequence])
     return myFasta
 
-##提取sORF序列
+##extract sORF sequence
 def get_sORF(fastas):
     sORF_seq = []
     for i in fastas:
@@ -103,7 +103,7 @@ def get_sORF(fastas):
             sORF_seq.append([name, seq])
     return sORF_seq
 
-##核苷酸转化成氨基酸序列
+##get protein sequence
 def get_protein(fastas):
     protein_seq=[]
     start_codon = 'ATG'
@@ -135,7 +135,7 @@ def get_protein(fastas):
         protein_seq.append([protein_name, protein])
     return protein_seq
 
-##提取特征
+##extract features
 def feature_encode(datapath, dna_seq, protein_seq, s_type, d_type):
     if s_type == 'H.sapiens':
         if d_type == 'CDS':
@@ -221,10 +221,10 @@ def feature_encode(datapath, dna_seq, protein_seq, s_type, d_type):
     with open(filename) as f:
         reader = csv.reader(f)
         header_row = next(reader)
-    features = pd.DataFrame(fea[1:, 1:], columns=header_row)      #先将np.array数组转换一下格式，才能使用.loc, .to_csv等操作
+    features = pd.DataFrame(fea[1:, 1:], columns=header_row)
     return features
 
-##测试模型
+##test model
 def test_model(datapath,outpath,datafile,s_type,d_type):
 
     test_sequence = readFasta(datapath + datafile)
@@ -235,7 +235,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
     if s_type=='H.sapiens':
         if d_type=='CDS':
             trainX = pd.read_csv(datapath + 'human_cds_trainX_feature150.csv').values
-            trainX_ = trainX.reshape([14464, 10, 15, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([14464, 10, 15, 1])  
             y1 = np.array([1] * 7232 + [0] * 7232)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.01, n_estimators=400,
@@ -246,7 +246,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF150.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'human_cds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:150, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:150, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'human_cds_testX_feature150.csv', index=False)
             testX = pd.read_csv(outpath + 'human_cds_testX_feature150.csv').values
@@ -256,7 +256,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             model_name='human_cds.h5'
         elif d_type=='non-CDS':
             trainX = pd.read_csv(datapath + 'human_noncds_trainX_feature250.csv').values
-            trainX_ = trainX.reshape([15500, 10, 25, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([15500, 10, 25, 1])
             y1 = np.array([1] * 7750 + [0] * 7750)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.05, n_estimators=300,
@@ -267,7 +267,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF250.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'human_noncds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:250, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:250, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'human_noncds_testX_feature250.csv', index=False)
             testX = pd.read_csv(outpath + 'human_noncds_testX_feature250.csv').values
@@ -281,7 +281,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
     elif s_type=='M.musculus':
         if d_type=='CDS':
             trainX = pd.read_csv(datapath + 'mouse_cds_trainX_feature150.csv').values
-            trainX_ = trainX.reshape([5230, 10, 15, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([5230, 10, 15, 1])
             y1 = np.array([1] * 2615 + [0] * 2615)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.1, n_estimators=100,
@@ -292,7 +292,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF150.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'mouse_cds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:150, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:150, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'mouse_cds_testX_feature150.csv', index=False)
             testX = pd.read_csv(outpath + 'mouse_cds_testX_feature150.csv').values
@@ -302,7 +302,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             model_name='mouse_cds.h5'
         elif d_type=='non-CDS':
             trainX = pd.read_csv(datapath + 'mouse_noncds_trainX_feature250.csv').values
-            trainX_ = trainX.reshape([6132, 10, 25, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([6132, 10, 25, 1])
             y1 = np.array([1] * 3066 + [0] * 3066)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.05, n_estimators=300,
@@ -313,7 +313,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF250.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'mouse_noncds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:250, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:250, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'mouse_noncds_testX_feature250.csv', index=False)
             testX = pd.read_csv(outpath + 'mouse_noncds_testX_feature250.csv').values
@@ -327,7 +327,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
     elif s_type=='D.melanogaster':
         if d_type=='CDS':
             trainX = pd.read_csv(datapath + 'fruitfly_cds_trainX_feature150.csv').values
-            trainX_ = trainX.reshape([1364, 10, 15, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([1364, 10, 15, 1])
             y1 = np.array([1] * 682 + [0] * 682)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.1, n_estimators=100,
@@ -338,7 +338,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF150.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'fruitfly_cds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:150, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:150, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'fruitfly_cds_testX_feature150.csv', index=False)
             testX = pd.read_csv(outpath + 'fruitfly_cds_testX_feature150.csv').values
@@ -348,7 +348,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             model_name='fruitfly_cds.h5'
         elif d_type=='non-CDS':
             trainX = pd.read_csv(datapath + 'fruitfly_noncds_trainX_feature150.csv').values
-            trainX_ = trainX.reshape([13956, 10, 15, 1])  #####更改特征维数
+            trainX_ = trainX.reshape([13956, 10, 15, 1])
             y1 = np.array([1] * 6978 + [0] * 6978)
             ##LightGBM
             lgbClf = lgb.LGBMClassifier(boosting_type='gbdt', learning_rate=0.05, n_estimators=300,
@@ -359,7 +359,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
             ##Efficien-CapsNet
             model = Efficient_CapsNet_sORF150.build_sORF(trainX_.shape[1:], mode='test', verbose=True)
             feature_importance = pd.read_csv(datapath + 'fruitfly_noncds_featureRank_lightgbm.csv')
-            selector = feature_importance.iloc[0:150, 0].tolist()  ##设置选择的特征数目
+            selector = feature_importance.iloc[0:150, 0].tolist()
             fea_sel = fea.loc[:, selector]
             fea_sel.to_csv(outpath + 'fruitfly_noncds_testX_feature150.csv', index=False)
             testX = pd.read_csv(outpath + 'fruitfly_noncds_testX_feature150.csv').values
@@ -374,7 +374,7 @@ def test_model(datapath,outpath,datafile,s_type,d_type):
 
 
 
-    #加载权重
+    #load weight
     model.load_weights(datapath + model_name)
     print('-' * 30 + 'Begin: test' + '-' * 30)
     pred_testlabel, score = model.predict(testX_)
