@@ -204,7 +204,7 @@ def i_framed_3mer_1(fastas):
             else:
                 code.append(0)
         i_framed_3mer_1_encoding.append(code)
-    #删除终止密码子列
+    #delet stop codon column
     index_to_delet = [49, 51, 57]
     i_framed_3mer_1_fea = []
     for i in i_framed_3mer_1_encoding:
@@ -393,7 +393,7 @@ def i_framed_TDE_1(fastas, Tc_pos1, Tc_neg1):
         code = code + tmpCode
         i_framed_TDE_1_encoding.append(code)
 
-    # 删除终止密码子列
+    #delet stop codon column
     index_to_delet = [49, 51, 57]
     i_framed_TDE_1_fea = []
     for i in i_framed_TDE_1_encoding:
@@ -487,7 +487,7 @@ def AAC(fastas):
         header.append('AAC_' + i)
     AAC_encoding.append(header)
     for i in fastas:
-        name, seq = i[0], re.sub('-', '', i[1])   #将序列中的‘-’替换为空‘’，即去除序列中的‘-’
+        name, seq = i[0], re.sub('-', '', i[1])
         count = Counter(seq)
         for key in count:
             count[key] = count[key] / len(seq)
