@@ -24,7 +24,7 @@ This folder contains the predicted results of input file.
 
 ## Prerequisites
 ### Software Prerequisites:
-CircAST is implemented in Python3.8 under Linux system.\
+csORF_finder is implemented in Python3.8.\
 Python modules used in csORF_finder:  
 ```
 numpy  
