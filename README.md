@@ -1,5 +1,5 @@
 # csORF-finder: an effective ensemble learning framework for accurate identification of multi-species coding short open reading frames
-csORF-finder is a series of species-specific ensemble models, integrating Efficient-CapsNet and LightGBM for identifying csORFs.\ 
+csORF-finder is a series of species-specific ensemble models, integrating Efficient-CapsNet and LightGBM for identifying csORFs 
 in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
 
 ## EXPLANATION
