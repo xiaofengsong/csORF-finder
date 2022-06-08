@@ -1,65 +1,74 @@
-# A tool for identifying coding short ORF (csORF)
-csORF-finder is an ensemble learning approach developed for identifying coding short open reading frames (csORFs) in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
+# csORF-finder: an effective ensemble learning framework for accurate identification of multi-species coding short open reading frames
+csORF-finder is a series of species-specific ensemble models, integrating Efficient-CapsNet and LightGBM for identifying csORFs.\ 
+in CDS and nonCDS regions of H. sapiens, M. musculus, and D. melanogaster, respectively.
 
 ## EXPLANATION
 This repository contains four folders, code, raw_data, input_files and output_files.
 
 ### Code folder:
-This folder contains the python codes.  
+This folder contains the following python codes and files subfolder (including model, training features, etc.).  
 ```
-csORF_finder.py
+readFasta.py
+getsORFs.py
+getProteins.py
 feature_encoding.py
 layers.py
 Efficient_CapsNet_sORF150.py
 Efficient_CapsNet_sORF250.py
+csORF_finder_predict.py
+csORF_finder_predict1.py (for other species, such as R. norvegicus, S. cerevisiae, and A. thaliana)
+csORF_finder_predict2.py (for other species, such as D. rerio and C. elegans)
 ```
+
 ### raw_data folder:
-This folder contains all the training and testing datasets in [1].
+This folder contains all the training and testing datasets in csORF-finder.
 
 ### input_files folder:
-This folder contains model and feature set files of H. sapiens, M. musculus, and D. melanogaster.
+This folder contains input file.
 
 ### output_files folder:
 This folder contains the predicted results of input file.
 
-## Prerequisites
-### Software Prerequisites:
-csORF_finder is implemented in Python3.8.\
-Python modules used in csORF_finder:  
+## Installation and USAGE:
+Based on python3.8.  
+Python modules:  
 ```
-numpy  
-pandas
-scipy  
-csv  
-keras
-lightgbm
-sklearn
-Bio
-math
+conda install cudatoolkit=10.1
+conda install cudnn=7.6
+pip install tensorflow-gpu==2.3.0
+pip install protobuf==3.20.0
+pip install keras==2.2.4
+pip install lightgbm
+pip install pandas
+pip install openpyxl
 ```
-Keras is backened on tensorflow.  
+Installing all the modules firstly.
+Command:  
+```
+cd csORF_finder/code
+python csORF_finder_predict.py -i input_files -o output_files -s species -r regions -t type
+python csORF_finder_predict1.py -i input_files -o output_files -t type
+python csORF_finder_predict2.py -i input_files -o output_files -t type
+```
+-i, input_files: input file name located in input_files folder. Query sequences to be predicted in fasta format.\
+-o, input_files: output file name located in output_files folder. Save the prediction results.\
+-s, species: 'H.sapiens' or 'M.musculus' or 'D.melanogaster'.Please enter the specific species, currently we accept three options: H.sapiens, M.musculus, and D.melanogaster'.\
+-r, regions: 'CDS' or 'non-CDS'. Please enter the region type to choose the model, two options: CDS and non-CDS'.\
+-t, type: 'sORF' or 'other'. Query sequences is sORFs or others.
 
-## USAGE:
-	Command:
-		python csORF_finder.py -d input_path/ -i input_file.fa -o output_dir/ -s species -t region_type
-	Options:
-		-d,	--dir
-			  input file path
-		-i,	--input
-			  input file name (FASTA format)  
-		-o,	--output
-			  output file path
-		-s,	--species
-			  species name, three options: H.sapiens, M.musculus, and D.melanogaster
-		-t,	--type
-			  region type, two options: CDS and non-CDS
-		-h,	--help
-          	  	  show the help information
+### Example:
+```
+python csORF_finder_predict.py -i H.sapiens_test.txt -o H.sapiens_results.csv -s H.sapiens -r CDS -t sORF
+python csORF_finder_predict.py -i M.musculus_test.txt -o M.musculus_results.csv -s M.musculus -r non-CDS -t sORF
+python csORF_finder_predict.py -i D.melanogaster_test.txt -o D.melanogaster_results.csv -s D.melanogaster -r CDS -t sORF
+python csORF_finder_predict1.py -i A.thaliana_test.txt -o A.thaliana_results.csv -t sORF
+python csORF_finder_predict2.py -i C.elegans_test.txt -o C.elegans_results.csv -t sORF
+```
 
 More details can be found from [1]
 
 ## REFERANCE
-[1] Zhang M, Zhao J, Li C, Jiang B, Song JN, Song XF. csORF-finder: an effective ensemble learning approach for accurate identification of multi-species coding short open reading frames. (Unpublished)
+[1] Zhang M, Zhao J, Li C, Song J, Song X. csORF-finder: an effective ensemble learning framework for accurate identification of multi-species coding short open reading frames.
 
 ## CONTACT
 If you have any inqueries, please contact mengzhang@nuaa.edu.cn.

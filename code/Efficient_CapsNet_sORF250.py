@@ -20,10 +20,10 @@ def efficient_capsnet_sORF(input_shape):
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Conv2D(128, 3, 2, activation='relu', padding='valid', kernel_initializer='he_normal')(x)
     x = tf.keras.layers.BatchNormalization()(x)
-    x = PrimaryCaps(128, 1, 64, 16)(x)
+    x = PrimaryCaps(128, 1, 64, 16)(x) #
 
 
-    digit_caps = FCCaps(2, 64)(x)
+    digit_caps = FCCaps(2, 64)(x) #
 
     digit_caps_len = Length(name='Length_capsnet_output')(digit_caps)
 
@@ -39,7 +39,7 @@ def generator_sORF(input_shape):
         input_shape: list
             network input shape
     """
-    inputs = tf.keras.Input(64*2)
+    inputs = tf.keras.Input(64*2)  #
 
     # x = tf.keras.layers.Dense(128, activation='relu', kernel_initializer='he_normal')(inputs)
     x = tf.keras.layers.Dense(512, activation='relu', kernel_initializer='he_normal')(inputs)
@@ -64,7 +64,7 @@ def build_sORF(input_shape, mode, verbose):
     """
     inputs = tf.keras.Input(input_shape)
     y_true = tf.keras.layers.Input(shape=(2,))
-    noise = tf.keras.layers.Input(shape=(2, 64))
+    noise = tf.keras.layers.Input(shape=(2, 64))   #
 
     efficient_capsnet = efficient_capsnet_sORF(input_shape)
 
@@ -72,7 +72,6 @@ def build_sORF(input_shape, mode, verbose):
         efficient_capsnet.summary()
         print("\n\n")
     digit_caps, digit_caps_len = efficient_capsnet(inputs)
-    print(digit_caps_len)
     noise_digitcaps = tf.keras.layers.Add()([digit_caps, noise]) #only if mode is play
 
     masked_by_y = Mask()([digit_caps, y_true])

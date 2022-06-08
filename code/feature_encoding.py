@@ -1,15 +1,73 @@
-import numpy as np
-from Bio import SeqIO
-import math
+##Feature encoding based on DNA and protein sequences
 import pandas as pd
 import csv
-from keras.models import load_model
+import re
+import numpy as np
+import math
 from collections import Counter
-import re, os, sys
-import itertools
 
 
-def extract_DNAfeatures(data, c_m, nc_m, Tc_pos1, Tc_neg1, Tc_pos2, Tc_neg2, Tc_pos3, Tc_neg3, fea1_1):
+##extracting species-specific DNA and protein sequence feature
+def extracted_features(dna_seq, protein_seq, species, region):
+    if species == 'H.sapiens':
+        if region == 'CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=0, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=0, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/human_cds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_hcds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        elif region == 'non-CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=1, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=1, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/human_noncds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_hnoncds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        else:
+            print("Type error")
+    elif species == 'M.musculus':
+        if region == 'CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=2, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=2, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/mouse_cds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_mcds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        elif region == 'non-CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=3, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=3, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/mouse_noncds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_mnoncds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        else:
+            print("Type error")
+    elif species == 'D.melanogaster':
+        if region == 'CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=4, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=4, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/fruitfly_cds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_fcds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        elif region == 'non-CDS':
+            c_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=5, nrows=1, header=None)
+            nc_m = pd.read_excel('./files/6mermean.xlsx', sheet_name=5, skiprows=1, header=None)
+            Tc = pd.read_csv('./files/fruitfly_noncds_train_framed_3mer.csv', header=None, delimiter=',').values
+            fea1_1 = np.array(ratio_ORFlength_fnoncds(dna_seq))
+            dna_fea = np.array(extract_DNAfeatures(dna_seq, c_m, nc_m, Tc[:, 0:64], Tc[:, 64:128], Tc[:, 128:192], fea1_1))
+        else:
+            print("Type error")
+    else:
+        print("Species error")
+
+    protein_fea = np.array(extract_Proteinfeatures(protein_seq))
+    fea = np.concatenate((dna_fea, protein_fea), axis=1)
+    filename='./files/feature_name.csv'
+    with open(filename) as f:
+        reader = csv.reader(f)
+        header_row = next(reader)
+    features = pd.DataFrame(fea[1:, 1:], columns=header_row)
+    return features
+
+
+def extract_DNAfeatures(data, c_m, nc_m, Tc_1, Tc_2, Tc_3, fea1_1):
     sequences = data
     #DNA
     fea1 = np.array(ORF_length(sequences))
@@ -20,9 +78,9 @@ def extract_DNAfeatures(data, c_m, nc_m, Tc_pos1, Tc_neg1, Tc_pos2, Tc_neg2, Tc_
     fea6 = np.array(i_framed_CKSNAP_1(sequences))
     fea7 = np.array(i_framed_CKSNAP_2(sequences))
     fea8 = np.array(i_framed_CKSNAP_3(sequences))
-    fea9 = np.array(i_framed_TDE_1(sequences, Tc_pos1, Tc_neg1))
-    fea10 = np.array(i_framed_TDE_2(sequences, Tc_pos2, Tc_neg2))
-    fea11 = np.array(i_framed_TDE_3(sequences, Tc_pos3, Tc_neg3))
+    fea9 = np.array(i_framed_TDE_1(sequences, Tc_1))
+    fea10 = np.array(i_framed_TDE_2(sequences, Tc_2))
+    fea11 = np.array(i_framed_TDE_3(sequences, Tc_3))
 
 
     feature_vector_dna = np.concatenate((fea1, fea1_1[:, 1:], fea2[:, 1:], fea3[:, 1:], fea4[:, 1:], fea5[:, 1:], fea6[:, 1:], fea7[:, 1:], fea8[:, 1:], fea9[:, 1:], fea10[:, 1:], fea11[:, 1:]), axis=1)
@@ -150,8 +208,6 @@ def Hexamer_score(fastas, c_m, nc_m, k=6):
     hexnuc = [nt1 + nt2 + nt3 + nt4 + nt5 + nt6 for nt1 in ntarr for nt2 in ntarr for nt3 in ntarr for nt4 in ntarr for nt5 in ntarr for nt6 in ntarr]
     for i in fastas:
         name, seq = i[0], re.sub('-', '', i[1])
-        print(seq)
-        print(len(seq))
         code = [name]
         if len(seq) > 5:
             l = len(seq) - k + 1
@@ -204,7 +260,7 @@ def i_framed_3mer_1(fastas):
             else:
                 code.append(0)
         i_framed_3mer_1_encoding.append(code)
-    #delet stop codon column
+    #delet the stop codon column
     index_to_delet = [49, 51, 57]
     i_framed_3mer_1_fea = []
     for i in i_framed_3mer_1_encoding:
@@ -358,8 +414,9 @@ def i_framed_CKSNAP_3(fastas, gap=1):
 
 
 # ###____________________________1-framed-TDE_____________________________
-def i_framed_TDE_1(fastas, Tc_pos1, Tc_neg1):
-    Tc = np.vstack((Tc_pos1, Tc_neg1))
+def i_framed_TDE_1(fastas, Tc_1):
+    # Tc = np.vstack((Tc_pos1, Tc_neg1))
+    Tc = Tc_1
     Tm = sum(Tc) / len(Tc)
     Tc_test = np.array(i_framed_3mer_1(fastas)[1])
     Tc_test = Tc_test[:, 1:]
@@ -393,7 +450,7 @@ def i_framed_TDE_1(fastas, Tc_pos1, Tc_neg1):
         code = code + tmpCode
         i_framed_TDE_1_encoding.append(code)
 
-    #delet stop codon column
+    # delet the stop codon column
     index_to_delet = [49, 51, 57]
     i_framed_TDE_1_fea = []
     for i in i_framed_TDE_1_encoding:
@@ -405,8 +462,9 @@ def i_framed_TDE_1(fastas, Tc_pos1, Tc_neg1):
 
 
 # ###____________________________2-framed-TDE_____________________________
-def i_framed_TDE_2(fastas, Tc_pos2, Tc_neg2):
-    Tc = np.vstack((Tc_pos2, Tc_neg2))
+def i_framed_TDE_2(fastas, Tc_2):
+    # Tc = np.vstack((Tc_pos2, Tc_neg2))
+    Tc = Tc_2
     Tm = sum(Tc) / len(Tc)
     Tc_test = np.array(i_framed_3mer_2(fastas))
     Tc_test = Tc_test[:, 1:]
@@ -442,8 +500,9 @@ def i_framed_TDE_2(fastas, Tc_pos2, Tc_neg2):
 
 
 # ###____________________________3-framed-TDE_____________________________
-def i_framed_TDE_3(fastas, Tc_pos3, Tc_neg3):
-    Tc = np.vstack((Tc_pos3, Tc_neg3))
+def i_framed_TDE_3(fastas, Tc_3):
+    # Tc = np.vstack((Tc_pos3, Tc_neg3))
+    Tc = Tc_3
     Tm = sum(Tc) / len(Tc)
     Tc_test = np.array(i_framed_3mer_3(fastas))
     Tc_test = Tc_test[:, 1:]
