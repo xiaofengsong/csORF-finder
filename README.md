@@ -28,7 +28,7 @@ This folder contains input file.
 ### output_files folder:
 This folder contains the predicted results of input file.
 
-## Installation and USAGE:
+## INSTALLATION and USAGE:
 Based on python3.8.  
 Python modules:  
 ```
@@ -49,7 +49,7 @@ python csORF_finder_predict.py -i input_files -o output_files -m model
 ```
 ```
 -i, input_files: input file name located in input_files folder. Query sequences to be predicted in fasta format.\
--o, input_files: output file name located in output_files folder. Save the prediction results.\
+-o, output_files: output file name located in output_files folder. Save the prediction results.\
 -m, model: Please choose the model, six options: H.sapiens-CDS, H.sapiens-non-CDS, M.musculus-CDS, M.musculus-non-CDS, D.melanogaster-CDS, D.melanogaster-non-CDS.
 ```
 
