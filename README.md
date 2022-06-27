@@ -28,7 +28,7 @@ This folder contains input file.
 ### output_files folder:
 This folder contains the predicted results of input file.
 
-## INSTALLATION and USAGE:
+## INSTALLATION AND USAGE:
 Based on python3.8.  
 Python modules:  
 ```
