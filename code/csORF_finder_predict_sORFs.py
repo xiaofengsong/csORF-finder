@@ -76,7 +76,7 @@ def test_model(inputfile, outputfile, model):
         ##Efficient-CapsNet model
         model = Efficient_CapsNet_sORF150.build_sORF(trainX_.shape[1:], mode='test', verbose=False)
         feature_importance = pd.read_excel('./files/featureRank_lightgbm.xlsx', sheet_name=2, header=None)
-        selector = feature_importance.iloc[0:150, 0].tolist()  ##设置选择的特征数目
+        selector = feature_importance.iloc[0:150, 0].tolist()
         fea_sel = fea.loc[:, selector].values
         testX = [[float(i) for i in l] for l in fea_sel]
         testX_ = np.array(testX).reshape([len(sORF_seq), 10, 15, 1])
