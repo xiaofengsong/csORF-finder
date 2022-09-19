@@ -68,7 +68,7 @@ python csORF_finder_predict_sORFs.py -i C.elegans_sORFs_test.txt -o C.elegans_sO
 More details can be found from [1]
 
 ## REFERANCE
-[1] Zhang M, Zhao J, Li C, Ge F, Wu J, Jiang B, Song J, Song X. csORF-finder: an effective ensemble learning framework for accurate identification of multi-species coding short open reading frames.
+[1] Meng Zhang, Jian Zhao, Chen Li, Fang Ge, Jing Wu, Bin Jiang, Jiangning Song, Xiaofeng Song, csORF-finder: an effective ensemble learning framework for accurate identification of multi-species coding short open reading frames, Briefings in Bioinformatics, 2022;, bbac392, https://doi.org/10.1093/bib/bbac392.
 
 ## CONTACT
 If you have any inqueries, please contact mengzhang@nuaa.edu.cn.
